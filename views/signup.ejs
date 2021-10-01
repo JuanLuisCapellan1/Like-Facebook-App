@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+  <link rel="stylesheet" href="/styles.css">
+  <title>Sign Up</title>
+</head>
+<body>
+  <section class="ftco-section py-5">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+          <div class="login-wrap p-4 p-md-5 my-5">
+  
+            <div class="d-flex">
+                <div class="w-100">
+                    <h3 class="mb-4">Sign Up</h3>
+                </div>
+            </div>
+  
+            <form action="/signUp" class="signin-form">
+              <div class="form-group mb-3">
+                <label class="label" for="name">FullName:</label>
+                <input type="text" class="form-control" placeholder="FullName" id="fullName" required>
+              </div>
+
+              <div class="form-group mt-3">
+                <label class="label" for="name">Username:</label>
+                <input type="text" class="form-control" placeholder="Username" id="username" required>
+              </div>
+              
+              <div class="username error form-text text-danger fs-6"></div>
+              
+              <div class="form-group mt-3">
+                <label class="label" for="password">Password:</label>
+                <input type="password" class="form-control" placeholder="Password" id="password" required>
+              </div>
+              
+              <div class="password error form-text text-danger fs-6"></div>
+              
+              <div class="form-group mt-3">
+                <label class="label" for="configPassword">Confirm Password:</label>
+                <input type="password" class="form-control" placeholder="Confirm Password" id="configPassword" required>
+              </div>
+  
+              <div class="configPassword-error"></div>
+
+              <div class="form-group pt-4">
+                  <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign Up</button>
+              </div>
+            </form>
+
+            <p class="text-center pt-3 pb-0 mb-0">A member? <a data-toggle="tab" href="/logIn">Log In</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const form = document.querySelector('form');
+    const usernameError = document.querySelector('.username.error');
+    const passwordError = document.querySelector('.password.error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      usernameError.textContent = '';
+      passwordError.textContent = '';
+
+      const fullName = form.fullName.value;
+      const username = form.username.value;
+      const password = form.password.value;
+
+      try {
+        const res = await fetch('/signUp', {
+          method: 'POST',
+          body: JSON.stringify({
+            fullName,
+            username,
+            password
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = await res.json();
+        //console.log(data);
+
+        if (data.errors) {
+          const configPassword = form.configPassword.value;
+          
+          if(password != configPassword){
+            data.errors.password = 'The password dont Match'
+          }
+          usernameError.textContent = data.errors.username;
+          passwordError.textContent = data.errors.password;
+        }
+
+        if (data.user) {
+          location.assign('/');
+        }
+        
+      }
+      catch (err) {
+        console.log(err);
+      }
+    });
+  </script>
+</body>
+</html>

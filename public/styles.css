@@ -1,0 +1,9 @@
+.login-wrap{
+    background-color: #fcf9f9;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.username .error{
+    color: red;
+    background-color: red;
+}
